@@ -11,7 +11,7 @@
 #include "events.h"
 
 #ifndef SET_CFLG
-
+#error ddddd
 #define SET_CFLG(x) (CFLG() = (x))
 #define SET_NFLG(x) (NFLG() = (x))
 #define SET_VFLG(x) (VFLG() = (x))
@@ -41,12 +41,6 @@ extern int movem_index1[256];
 extern int movem_index2[256];
 extern int movem_next[256];
 
-#ifdef FPUEMU
-extern int fpp_movem_index1[256];
-extern int fpp_movem_index2[256];
-extern int fpp_movem_next[256];
-#endif
-
 typedef uae_u32 REGPARAM3 cpuop_func (uae_u32) REGPARAM;
 typedef void REGPARAM3 cpuop_func_ce (uae_u32) REGPARAM;
 
@@ -55,18 +49,7 @@ struct cputbl {
 	uae_u16 opcode;
 };
 
-#ifdef JIT
-typedef uae_u32 REGPARAM3 compop_func (uae_u32) REGPARAM;
-
-struct comptbl {
-	compop_func *handler;
-	uae_u32 opcode;
-	int specific;
-};
-#endif
-
 extern uae_u32 REGPARAM3 op_illg (uae_u32) REGPARAM;
-extern void REGPARAM3 op_unimpl (uae_u16) REGPARAM;
 
 typedef uae_u8 flagtype;
 
@@ -123,16 +106,6 @@ struct mmufixup
 };
 extern struct mmufixup mmufixup[2];
 
-typedef struct
-{
-	fptype fp;
-#ifdef USE_SOFT_LONG_DOUBLE
-	bool fpx;
-	uae_u32 fpm;
-	uae_u64 fpe;
-#endif
-} fpdata;
-
 struct regstruct
 {
 	uae_u32 regs[16];
@@ -164,46 +137,12 @@ struct regstruct
 
 	uae_u32 vbr, sfc, dfc;
 
-#ifdef FPUEMU
-	fpdata fp[8];
-	fpdata fp_result;
-	uae_u32 fp_result_status;
-	uae_u32 fpcr, fpsr, fpiar;
-	uae_u32 fpu_state;
-	uae_u32 fpu_exp_state;
-	fpdata exp_src1, exp_src2;
-	uae_u32 exp_pack[3];
-	uae_u16 exp_opcode, exp_extra, exp_type;
-	bool fp_exception;
-#endif
-#ifndef CPUEMU_68000_ONLY
-	uae_u32 cacr, caar;
-	uae_u32 itt0, itt1, dtt0, dtt1;
-	uae_u32 tcr, mmusr, urp, srp, buscr;
-	uae_u32 mmu_fslw;
-	uae_u32 mmu_fault_addr, mmu_effective_addr;
-	uae_u16 mmu_ssw;
-	uae_u32 wb2_address;
-	uae_u32 wb3_data;
-	uae_u8 wb3_status, wb2_status;
-	int mmu_enabled;
-	int mmu_page_size;
-#endif
-
 	uae_u32 pcr;
 	uae_u32 address_space_mask;
 
 	uae_u8 panic;
 	uae_u32 panic_pc, panic_addr;
 
-	uae_u32 prefetch020[CPU_PIPELINE_MAX];
-	uae_u32 prefetch020addr;
-	uae_u32 cacheholdingdata020;
-	uae_u32 cacheholdingaddr020;
-	int ce020memcycles;
-	bool ce020memcycle_data;
-	int ce020_tail;
-	frame_time_t ce020_tail_cycles;
 };
 
 extern struct regstruct regs;
@@ -251,7 +190,6 @@ extern bool m68k_pc_indirect;
 STATIC_INLINE void set_special (uae_u32 x)
 {
 	regs.spcflags |= x;
-	cycles_do_special ();
 }
 
 STATIC_INLINE void unset_special (uae_u32 x)
@@ -282,31 +220,6 @@ STATIC_INLINE uaecptr m68k_getpc_p(uae_u8 *p)
 STATIC_INLINE void m68k_incpc(int o)
 {
 	regs.pc_p += o;
-}
-
-STATIC_INLINE uae_u32 get_dibyte(int o)
-{
-	return do_get_mem_byte((uae_u8 *)((regs).pc_p + (o) + 1));
-}
-STATIC_INLINE uae_u32 get_diword(int o)
-{
-	return do_get_mem_word((uae_u16 *)((regs).pc_p + (o)));
-}
-STATIC_INLINE uae_u32 get_dilong(int o)
-{
-	return do_get_mem_long((uae_u32 *)((regs).pc_p + (o)));
-}
-STATIC_INLINE uae_u32 next_diword(void)
-{
-	uae_u32 r = do_get_mem_word((uae_u16 *)((regs).pc_p));
-	m68k_incpc(2);
-	return r;
-}
-STATIC_INLINE uae_u32 next_dilong(void)
-{
-	uae_u32 r = do_get_mem_long((uae_u32 *)((regs).pc_p));
-	m68k_incpc(4);
-	return r;
 }
 
 STATIC_INLINE void m68k_do_bsr(uaecptr oldpc, uae_s32 offset)
@@ -478,6 +391,7 @@ extern bool m68k_divl (uae_u32, uae_u32, uae_u16);
 extern bool m68k_mull (uae_u32, uae_u32, uae_u16);
 extern void init_m68k (void);
 extern void init_m68k_full (void);
+extern void m68k_reset (bool hardreset);
 extern void m68k_go (int);
 extern void m68k_dumpstate (uaecptr *);
 extern void m68k_dumpstate (uaecptr, uaecptr *);
@@ -492,20 +406,6 @@ extern void unprotect_maprom (void);
 extern void mmu_op (uae_u32, uae_u32);
 extern void mmu_op30 (uaecptr, uae_u32, uae_u16, uaecptr);
 
-extern void fpuop_arithmetic(uae_u32, uae_u16);
-extern void fpuop_dbcc(uae_u32, uae_u16);
-extern void fpuop_scc(uae_u32, uae_u16);
-extern void fpuop_trapcc(uae_u32, uaecptr, uae_u16);
-extern void fpuop_bcc(uae_u32, uaecptr, uae_u32);
-extern void fpuop_save(uae_u32);
-extern void fpuop_restore(uae_u32);
-extern uae_u32 fpp_get_fpsr (void);
-extern void fpu_reset (void);
-extern void fpux_save (int*);
-extern void fpux_restore (int*);
-extern bool fpu_get_constant(fpdata *fp, int cr);
-extern int fpp_cond(int condition);
-
 extern void exception3 (uae_u32 opcode, uaecptr addr);
 extern void exception3i (uae_u32 opcode, uaecptr addr);
 extern void exception3b (uae_u32 opcode, uaecptr addr, bool w, bool i, uaecptr pc);
@@ -513,10 +413,9 @@ extern void exception2 (uaecptr addr, bool read, int size, uae_u32 fc);
 extern void exception2_fake (uaecptr addr);
 extern void cpureset (void);
 extern void cpu_halt (int id);
+extern void m68k_run_1 (void);
 
 extern void fill_prefetch (void);
-extern void fill_prefetch_020 (void);
-extern void fill_prefetch_030 (void);
 
 #define CPU_OP_NAME(a) op ## a
 
@@ -546,16 +445,6 @@ extern const struct cputbl op_smalltbl_12_ff[]; // prefetch
 extern const struct cputbl op_smalltbl_14_ff[]; // CE
 
 extern cpuop_func *cpufunctbl[65536] ASM_SYM_FOR_FUNC ("cpufunctbl");
-
-#ifdef JIT
-extern void flush_icache (uaecptr, int);
-extern void compemu_reset (void);
-extern bool check_prefs_changed_comp (void);
-#else
-#define flush_icache(uaecptr, int) do {} while (0)
-#endif
-extern void flush_dcache (uaecptr, int);
-extern void flush_mmu (uaecptr, int);
 
 extern int movec_illg (int regno);
 extern uae_u32 val_move2c (int regno);
