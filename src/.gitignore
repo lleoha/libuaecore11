@@ -1,1 +1,10 @@
 /config.h.in
+/.deps/
+/.libs/
+/Makefile
+/config.h
+/stamp-h1
+/cpudefs.cpp
+/cpuemu_11.cpp
+/cpuemu_13_stub.cpp
+/cpustbl.cpp

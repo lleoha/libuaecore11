@@ -9,3 +9,14 @@
 /install-sh
 /ltmain.sh
 /missing
+/Makefile
+/config.log
+/config.status
+/libtool
+
+*.o
+*.lo
+*.la
+*.so
+*.dll
+*.a
