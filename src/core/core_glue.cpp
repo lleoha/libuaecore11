@@ -6,7 +6,7 @@ uaecore11_handlers_t *uaecore11::handlers = 0;
 int uaecore11::interrupt_level = -1;
 
 int uaecore11::intlev() {
-    if (interrupt_level < 0 || interrupt_level > 7) {
+    if (interrupt_level == -1) {
         return -1;
     }
 
