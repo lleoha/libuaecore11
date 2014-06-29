@@ -9,13 +9,13 @@
       #define UAECORE11API
     #endif
   #else
-    #define UAECORE11API extern __declspec(dllimport)
+    #define UAECORE11API __declspec(dllimport)
   #endif
 #else
   #ifdef LIBUAECORE11_BUILD
     #define UAECORE11API __attribute__((visibility("default")))
   #else
-    #define UAECORE11API extern
+    #define UAECORE11API
   #endif
 #endif
 
@@ -26,6 +26,8 @@ extern "C" {
 typedef unsigned int (*uaecore11_read_handler_t)(unsigned int address);
 typedef void (*uaecore11_write_handler_t)(unsigned int address, unsigned int value);
 typedef void (*uaecore11_ticks_handler_t)(unsigned long ticks);
+typedef unsigned int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
+typedef void (*uaecore11_reset_handler_t)(void);
 
 typedef struct {
     uaecore11_read_handler_t get_byte;
@@ -33,12 +35,12 @@ typedef struct {
     uaecore11_read_handler_t get_long;
     uaecore11_read_handler_t get_wordi;
     uaecore11_read_handler_t get_longi;
-
     uaecore11_write_handler_t put_byte;
     uaecore11_write_handler_t put_word;
     uaecore11_write_handler_t put_long;
-
     uaecore11_ticks_handler_t ticks;
+    uaecore11_interrupt_ack_handler_t interrupt_ack;
+    uaecore11_reset_handler_t reset;
 } uaecore11_handlers_t;
 
 typedef enum {

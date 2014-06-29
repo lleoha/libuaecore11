@@ -259,6 +259,9 @@ static void Exception_normal (int nr)
 
 //	if (nr >= 24 && nr < 24 + 8)
 //		nr = x_get_byte (0x00fffff1 | (nr << 1));
+	if (uaecore11::handlers->interrupt_ack) {
+		nr = uaecore11::handlers->interrupt_ack(nr - 24);
+	}
 
 	MakeSR ();
 
@@ -372,12 +375,10 @@ uae_u32 REGPARAM2 op_illg (uae_u32 opcode)
 
 	if ((opcode & 0xF000) == 0xF000) {
 		Exception (0xB);
-		//activate_debugger ();
 		return 4;
 	}
 	if ((opcode & 0xF000) == 0xA000) {
 		Exception (0xA);
-		//activate_debugger();
 		return 4;
 	}
 
@@ -514,6 +515,9 @@ void exception3b (uae_u32 opcode, uaecptr addr, bool w, bool i, uaecptr pc)
 void cpureset (void)
 {
     /* RESET hasn't increased PC yet, 1 word offset */
+	if (uaecore11::handlers->reset) {
+		uaecore11::handlers->reset();
+	}
 	uaecptr pc;
 	uaecptr ksboot = 0xf80002 - 2;
 	m68k_setpc_normal (ksboot);
