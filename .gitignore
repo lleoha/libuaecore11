@@ -2,6 +2,7 @@
 /aclocal.m4
 /autom4te.cache/
 /compile
+/confdefs.h
 /config.guess
 /config.sub
 /configure
@@ -13,6 +14,7 @@
 /config.log
 /config.status
 /libtool
+/libuaecore11*.tar.gz
 
 *.o
 *.lo

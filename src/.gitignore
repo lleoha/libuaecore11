@@ -3,6 +3,7 @@
 /.libs/
 /Makefile
 /config.h
+/config.h.in~
 /stamp-h1
 /cpudefs.cpp
 /cpuemu_11.cpp

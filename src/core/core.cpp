@@ -1,5 +1,5 @@
 #include "core_api.h"
-#include "core_internal.h"
+#include "core_glue.h"
 
 #include "sysconfig.h"
 #include "sysdeps.h"
@@ -7,40 +7,15 @@
 #include "newcpu.h"
 #include "cpu_prefetch.h"
 
-#include <cstdio>
-
 using namespace uaecore11;
 
 
-uaecore11_callbacks_t *uaecore11::callbacks = 0;
-int uaecore11::interrupt_level = -1;
-
-int uaecore11::intlev() {
-    if (interrupt_level < 0 || interrupt_level > 7) {
-        return -1;
-    }
-
-    for (int i = 7; i >= 0; --i) {
-        if ((interrupt_level & (1 << i)) != 0) return i;
-    }
-
-    return -1;
-}
-
-void uaecore11::do_cycles_slow(unsigned long t) {
-    if (callbacks->ticks) {
-        callbacks->ticks(t);
-    }
-}
-
-UAECORE11API void uaecore11_init(uaecore11_callbacks_t *callbacks) {
-    ::uaecore11::callbacks = callbacks;
+UAECORE11API void uaecore11_init(uaecore11_handlers_t *handlers) {
+    ::uaecore11::handlers = handlers;
     init_m68k();
 }
 
 UAECORE11API void uaecore11_reset() {
-    printf("%lx\n", callbacks);
-    printf("%lx\n", callbacks->get_long);
     m68k_reset(true);
 }
 

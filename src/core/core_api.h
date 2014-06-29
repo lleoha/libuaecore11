@@ -2,32 +2,44 @@
 #define UAECORE11_CORE_API_H
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-  #ifdef DLL_EXPORT
-    #define UAECORE11API __declspec(dllexport)
+  #ifdef LIBUAECORE11_BUILD
+    #ifdef DLL_EXPORT
+      #define UAECORE11API __declspec(dllexport)
+    #else
+      #define UAECORE11API
+    #endif
   #else
-    #define UAECORE11API /*__declspec(dllimport)*/
+    #define UAECORE11API extern __declspec(dllimport)
   #endif
 #else
-  #define UAECORE11API __attribute__((visibility("default")))
+  #ifdef LIBUAECORE11_BUILD
+    #define UAECORE11API __attribute__((visibility("default")))
+  #else
+    #define UAECORE11API extern
+  #endif
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef unsigned int (*uaecore11_read_handler_t)(unsigned int address);
+typedef void (*uaecore11_write_handler_t)(unsigned int address, unsigned int value);
+typedef void (*uaecore11_ticks_handler_t)(unsigned long ticks);
+
 typedef struct {
-    unsigned int (*get_byte)(unsigned int address);
-    unsigned int (*get_word)(unsigned int address);
-    unsigned int (*get_long)(unsigned int address);
-    unsigned int (*get_wordi)(unsigned int address);
-    unsigned int (*get_longi)(unsigned int address);
+    uaecore11_read_handler_t get_byte;
+    uaecore11_read_handler_t get_word;
+    uaecore11_read_handler_t get_long;
+    uaecore11_read_handler_t get_wordi;
+    uaecore11_read_handler_t get_longi;
 
-    void (*put_byte)(unsigned int address, unsigned int value);
-    void (*put_word)(unsigned int address, unsigned int value);
-    void (*put_long)(unsigned int address, unsigned int value);
+    uaecore11_write_handler_t put_byte;
+    uaecore11_write_handler_t put_word;
+    uaecore11_write_handler_t put_long;
 
-    void (*ticks)(unsigned long ticks);
-} uaecore11_callbacks_t;
+    uaecore11_ticks_handler_t ticks;
+} uaecore11_handlers_t;
 
 typedef enum {
     UAECORE11_REGISTER_D0 = 0,
@@ -55,7 +67,7 @@ typedef enum {
     UAECORE11_REGISTER_SR
 } uaecore11_register_t;
 
-UAECORE11API void uaecore11_init(uaecore11_callbacks_t *callbacks);
+UAECORE11API void uaecore11_init(uaecore11_handlers_t *handlers);
 
 UAECORE11API void uaecore11_reset();
 

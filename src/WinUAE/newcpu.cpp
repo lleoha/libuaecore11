@@ -14,7 +14,7 @@
 #include "custom.h"
 #include "newcpu.h"
 #include "cpu_prefetch.h"
-#include "core_internal.h"
+#include "core_glue.h"
 
 
 /* Opcode of faulting instruction */

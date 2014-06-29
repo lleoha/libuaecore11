@@ -129,7 +129,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libuaecore11_la_LIBADD =
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libuaecore11_la_OBJECTS = WinUAE/libuaecore11_la-newcpu.lo \
-	WinUAE/libuaecore11_la-readcpu.lo core/libuaecore11_la-core.lo
+	WinUAE/libuaecore11_la-readcpu.lo core/libuaecore11_la-core.lo \
+	core/libuaecore11_la-core_glue.lo
 nodist_libuaecore11_la_OBJECTS = libuaecore11_la-cpuemu_11.lo \
 	libuaecore11_la-cpuemu_13_stub.lo libuaecore11_la-cpustbl.lo \
 	libuaecore11_la-cpudefs.lo
@@ -369,19 +370,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I $(top_srcdir)/src/WinUAE/include -I $(top_srcdir)/src/core -I tools
+AM_CPPFLAGS = -DLIBUAECORE11_BUILD -I $(top_srcdir)/src/WinUAE/include -I $(top_srcdir)/src/core -I tools
 AM_CXXFLAGS = -fpermissive
 lib_LTLIBRARIES = libuaecore11.la
 noinst_HEADERS = WinUAE/include/sysconfig.h WinUAE/include/events.h WinUAE/include/machdep/m68k.h WinUAE/include/tchar.h \
                  WinUAE/include/newcpu.h WinUAE/include/options.h WinUAE/include/sysdeps.h WinUAE/include/cpu_prefetch.h \
-                 WinUAE/include/memory.h WinUAE/include/custom.h WinUAE/include/readcpu.h core/core_internal.h
+                 WinUAE/include/memory.h WinUAE/include/custom.h WinUAE/include/readcpu.h core/core_glue.h
 
 uaecore11includedir = $(includedir)/uaecore11
 uaecore11include_HEADERS = core/core_api.h
 dist_noinst_DATA = WinUAE/table68k
 
 # libuaecore11
-libuaecore11_la_SOURCES = WinUAE/newcpu.cpp WinUAE/readcpu.cpp core/core.cpp
+libuaecore11_la_SOURCES = WinUAE/newcpu.cpp WinUAE/readcpu.cpp core/core.cpp core/core_glue.cpp
 nodist_libuaecore11_la_SOURCES = cpuemu_11.cpp cpuemu_13_stub.cpp cpustbl.cpp cpudefs.cpp
 libuaecore11_la_CXXFLAGS = -fvisibility=hidden $(AM_CXXFLAGS)
 libuaecore11_la_LDFLAGS = -no-undefined $(AM_LDFLAGS)
@@ -490,6 +491,8 @@ core/$(DEPDIR)/$(am__dirstamp):
 	@: > core/$(DEPDIR)/$(am__dirstamp)
 core/libuaecore11_la-core.lo: core/$(am__dirstamp) \
 	core/$(DEPDIR)/$(am__dirstamp)
+core/libuaecore11_la-core_glue.lo: core/$(am__dirstamp) \
+	core/$(DEPDIR)/$(am__dirstamp)
 
 libuaecore11.la: $(libuaecore11_la_OBJECTS) $(libuaecore11_la_DEPENDENCIES) $(EXTRA_libuaecore11_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libuaecore11_la_LINK) -rpath $(libdir) $(libuaecore11_la_OBJECTS) $(libuaecore11_la_LIBADD) $(LIBS)
@@ -511,6 +514,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@WinUAE/$(DEPDIR)/libuaecore11_la-newcpu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@WinUAE/$(DEPDIR)/libuaecore11_la-readcpu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@core/$(DEPDIR)/libuaecore11_la-core.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@core/$(DEPDIR)/libuaecore11_la-core_glue.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -556,6 +560,13 @@ core/libuaecore11_la-core.lo: core/core.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='core/core.cpp' object='core/libuaecore11_la-core.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libuaecore11_la_CXXFLAGS) $(CXXFLAGS) -c -o core/libuaecore11_la-core.lo `test -f 'core/core.cpp' || echo '$(srcdir)/'`core/core.cpp
+
+core/libuaecore11_la-core_glue.lo: core/core_glue.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libuaecore11_la_CXXFLAGS) $(CXXFLAGS) -MT core/libuaecore11_la-core_glue.lo -MD -MP -MF core/$(DEPDIR)/libuaecore11_la-core_glue.Tpo -c -o core/libuaecore11_la-core_glue.lo `test -f 'core/core_glue.cpp' || echo '$(srcdir)/'`core/core_glue.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) core/$(DEPDIR)/libuaecore11_la-core_glue.Tpo core/$(DEPDIR)/libuaecore11_la-core_glue.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='core/core_glue.cpp' object='core/libuaecore11_la-core_glue.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libuaecore11_la_CXXFLAGS) $(CXXFLAGS) -c -o core/libuaecore11_la-core_glue.lo `test -f 'core/core_glue.cpp' || echo '$(srcdir)/'`core/core_glue.cpp
 
 libuaecore11_la-cpuemu_11.lo: cpuemu_11.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libuaecore11_la_CXXFLAGS) $(CXXFLAGS) -MT libuaecore11_la-cpuemu_11.lo -MD -MP -MF $(DEPDIR)/libuaecore11_la-cpuemu_11.Tpo -c -o libuaecore11_la-cpuemu_11.lo `test -f 'cpuemu_11.cpp' || echo '$(srcdir)/'`cpuemu_11.cpp

@@ -12,7 +12,7 @@
   * Copyright 1995-1998 Bernd Schmidt
   */
 
-#include "core_internal.h"
+#include "core_glue.h"
 
 #define do_cycles do_cycles_slow
 
