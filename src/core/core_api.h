@@ -23,10 +23,10 @@
 extern "C" {
 #endif
 
+typedef unsigned int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
 typedef unsigned int (*uaecore11_read_handler_t)(unsigned int address);
 typedef void (*uaecore11_write_handler_t)(unsigned int address, unsigned int value);
 typedef void (*uaecore11_ticks_handler_t)(unsigned long ticks);
-typedef unsigned int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
 typedef void (*uaecore11_reset_handler_t)(void);
 
 typedef struct {
@@ -69,18 +69,39 @@ typedef enum {
     UAECORE11_REGISTER_SR
 } uaecore11_register_t;
 
+/**
+ * Initialize emulation core.
+ */
 UAECORE11API void uaecore11_init(uaecore11_handlers_t *handlers);
 
+/**
+ * Reset CPU.
+ */
 UAECORE11API void uaecore11_reset();
 
+/**
+ * Execute one instruction.
+ */
 UAECORE11API void uaecore11_execute();
 
+/**
+ * Request interrupt.
+ */
 UAECORE11API void uaecore11_raise_irq(int level);
 
+/**
+ * Lower interrupt request.
+ */
 UAECORE11API void uaecore11_lower_irq(int level);
 
+/**
+ * Get register value.
+ */
 UAECORE11API unsigned int uaecore11_get_register(uaecore11_register_t reg);
 
+/**
+ * Set register value.
+ */
 UAECORE11API void uaecore11_set_register(uaecore11_register_t reg, unsigned int value);
 
 #ifdef __cplusplus
