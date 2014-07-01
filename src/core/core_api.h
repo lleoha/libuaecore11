@@ -23,11 +23,12 @@
 extern "C" {
 #endif
 
-typedef unsigned int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
 typedef unsigned int (*uaecore11_read_handler_t)(unsigned int address);
 typedef void (*uaecore11_write_handler_t)(unsigned int address, unsigned int value);
 typedef void (*uaecore11_ticks_handler_t)(unsigned long ticks);
 typedef void (*uaecore11_reset_handler_t)(void);
+typedef int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
+typedef int (*uaecore11_exception_handler_t)(int vector, unsigned int address); 
 
 typedef struct {
     uaecore11_read_handler_t get_byte;
@@ -41,6 +42,7 @@ typedef struct {
     uaecore11_ticks_handler_t ticks;
     uaecore11_interrupt_ack_handler_t interrupt_ack;
     uaecore11_reset_handler_t reset;
+    uaecore11_exception_handler_t exceptions[256];
 } uaecore11_handlers_t;
 
 typedef enum {
@@ -80,19 +82,14 @@ UAECORE11API void uaecore11_init(uaecore11_handlers_t *handlers);
 UAECORE11API void uaecore11_reset();
 
 /**
- * Execute one instruction.
+ * Emulate one instruction.
  */
-UAECORE11API void uaecore11_execute();
+UAECORE11API void uaecore11_emulate();
 
 /**
- * Request interrupt.
+ * Set interrupt priority level (IPL).
  */
-UAECORE11API void uaecore11_raise_irq(int level);
-
-/**
- * Lower interrupt request.
- */
-UAECORE11API void uaecore11_lower_irq(int level);
+UAECORE11API void uaecore11_set_interrupt(int level);
 
 /**
  * Get register value.

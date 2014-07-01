@@ -305,6 +305,14 @@ kludge_me_do:
 // address = format $2 stack frame address field
 static void ExceptionX (int nr, uaecptr address)
 {
+	if (uaecore11::handlers->exceptions[nr]) {
+		bool handled = static_cast<bool>(uaecore11::handlers->exceptions[nr](nr, address));
+		if (handled) {
+			doint();
+			return;
+		}
+	}
+
 	regs.exception = nr;
 
 	Exception_normal (nr);
@@ -328,7 +336,6 @@ static void do_interrupt (int nr)
 	assert (nr < 8 && nr >= 0);
 
 	Exception (nr + 24);
-	uaecore11::interrupt_level &= ~(1 << nr);
 
 	regs.intmask = nr;
 	doint ();
@@ -473,9 +480,9 @@ void m68k_run_1 (void)
 
 	uae_u16 opcode = r->ir;
 
-	do_cycles (cpu_cycles);
 	r->instruction_pc = m68k_getpc ();
 	cpu_cycles = (*cpufunctbl[opcode])(opcode);
+	do_cycles (cpu_cycles);
 	if (r->spcflags) {
 		if (do_specialties (cpu_cycles)) {
 			regs.ipl = regs.ipl_pin;

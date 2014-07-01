@@ -3,7 +3,6 @@
 
 #include "core_api.h"
 
-
 namespace uaecore11 {
 
 extern uaecore11_handlers_t *handlers;
