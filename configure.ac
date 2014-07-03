@@ -16,22 +16,12 @@ AC_CONFIG_FILES([Makefile
 # Checks for programs.
 AC_PROG_CXX
 
-# Checks for libraries.
-
-# Checks for header files.
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_SIZEOF([short])
 AC_CHECK_SIZEOF([int])
 AC_CHECK_SIZEOF([long])
 AC_CHECK_SIZEOF([long long])
 AC_CHECK_SIZEOF([void *])
-
-# Checks for library functions.
-
-# Define configuration
-AC_DEFINE([CPUEMU_11], [], [Prefetch emulation (68000/68010)])
-AC_DEFINE([CPUEMU_68000_ONLY], [], [Drop 68010+ commands])
 
 if [[ "x$cross_compiling" != "xyes" ]]; then
     AC_CONFIG_SUBDIRS(src/tools)

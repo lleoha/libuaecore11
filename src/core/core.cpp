@@ -23,7 +23,7 @@ UAECORE11API void uaecore11_emulate() {
     m68k_run_1();
 }
 
-UAECORE11API void uaecore11_set_interrupt(int level) {
+UAECORE11API void uaecore11_interrupt(int level) {
     if (level != interrupt_level) {
         interrupt_level = level;
         doint();

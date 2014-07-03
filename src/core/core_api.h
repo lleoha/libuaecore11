@@ -25,7 +25,7 @@ extern "C" {
 
 typedef unsigned int (*uaecore11_read_handler_t)(unsigned int address);
 typedef void (*uaecore11_write_handler_t)(unsigned int address, unsigned int value);
-typedef void (*uaecore11_ticks_handler_t)(unsigned long ticks);
+typedef void (*uaecore11_cycles_handler_t)(unsigned long cycles);
 typedef void (*uaecore11_reset_handler_t)(void);
 typedef int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
 typedef int (*uaecore11_exception_handler_t)(int vector, unsigned int address); 
@@ -39,7 +39,7 @@ typedef struct {
     uaecore11_write_handler_t put_byte;
     uaecore11_write_handler_t put_word;
     uaecore11_write_handler_t put_long;
-    uaecore11_ticks_handler_t ticks;
+    uaecore11_cycles_handler_t cycles;
     uaecore11_interrupt_ack_handler_t interrupt_ack;
     uaecore11_reset_handler_t reset;
     uaecore11_exception_handler_t exceptions[256];
@@ -74,32 +74,32 @@ typedef enum {
 /**
  * Initialize emulation core.
  */
-UAECORE11API void uaecore11_init(uaecore11_handlers_t *handlers);
+extern UAECORE11API void uaecore11_init(uaecore11_handlers_t *handlers);
 
 /**
  * Reset CPU.
  */
-UAECORE11API void uaecore11_reset();
+extern UAECORE11API void uaecore11_reset();
 
 /**
  * Emulate one instruction.
  */
-UAECORE11API void uaecore11_emulate();
+extern UAECORE11API void uaecore11_emulate();
 
 /**
  * Set interrupt priority level (IPL).
  */
-UAECORE11API void uaecore11_set_interrupt(int level);
+extern UAECORE11API void uaecore11_interrupt(int level);
 
 /**
  * Get register value.
  */
-UAECORE11API unsigned int uaecore11_get_register(uaecore11_register_t reg);
+extern UAECORE11API unsigned int uaecore11_get_register(uaecore11_register_t reg);
 
 /**
  * Set register value.
  */
-UAECORE11API void uaecore11_set_register(uaecore11_register_t reg, unsigned int value);
+extern UAECORE11API void uaecore11_set_register(uaecore11_register_t reg, unsigned int value);
 
 #ifdef __cplusplus
 }

@@ -10,8 +10,8 @@ int uaecore11::intlev() {
     return interrupt_level;
 }
 
-void uaecore11::do_cycles_slow(unsigned long t) {
-    if (handlers->ticks) {
-        handlers->ticks(t / CYCLE_UNIT);
+void uaecore11::do_cycles_slow(unsigned long cycles) {
+    if (handlers->cycles) {
+        handlers->cycles(cycles / CYCLE_UNIT);
     }
 }

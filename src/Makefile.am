@@ -32,7 +32,7 @@ cpudefs.cpp: tools/cpudefs.cpp
 	
 
 tools/cpuemu_11.cpp tools/cpuemu_13_stub.cpp tools/cpustbl.cpp tools/cputbl.h tools/cpudefs.cpp: tools/Makefile
-	$(MAKE) -C tools $(notdir $@)
+	$(MAKE) -C $(dir $@) $(notdir $@)
 
 SUBDIRS = tools
 CLEANFILES = cpuemu_11.cpp cpuemu_13_stub.cpp cpustbl.cpp cpudefs.cpp
