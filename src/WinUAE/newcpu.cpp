@@ -257,10 +257,10 @@ static void Exception_normal (int nr)
 	uae_u32 currpc, newpc;
 	int sv = regs.s;
 
-//	if (nr >= 24 && nr < 24 + 8)
-//		nr = x_get_byte (0x00fffff1 | (nr << 1));
-	if (uaecore11::handlers->interrupt_ack) {
-		nr = uaecore11::handlers->interrupt_ack(nr - 24);
+	if (nr >= 24 && nr < 24 + 8) {
+		if (uaecore11::handlers->interrupt_ack) {
+			nr = uaecore11::handlers->interrupt_ack(nr - 24);
+		}
 	}
 
 	MakeSR ();

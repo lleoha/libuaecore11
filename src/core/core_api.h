@@ -27,15 +27,15 @@ typedef unsigned int (*uaecore11_read_handler_t)(unsigned int address);
 typedef void (*uaecore11_write_handler_t)(unsigned int address, unsigned int value);
 typedef void (*uaecore11_cycles_handler_t)(unsigned long cycles);
 typedef void (*uaecore11_reset_handler_t)(void);
-typedef int (*uaecore11_interrupt_ack_handler_t)(unsigned int level);
+typedef int (*uaecore11_interrupt_ack_handler_t)(int level);
 typedef int (*uaecore11_exception_handler_t)(int vector, unsigned int address); 
 
 typedef struct {
+    uaecore11_read_handler_t fetch_word;
+    uaecore11_read_handler_t fetch_long;
     uaecore11_read_handler_t get_byte;
     uaecore11_read_handler_t get_word;
     uaecore11_read_handler_t get_long;
-    uaecore11_read_handler_t get_wordi;
-    uaecore11_read_handler_t get_longi;
     uaecore11_write_handler_t put_byte;
     uaecore11_write_handler_t put_word;
     uaecore11_write_handler_t put_long;

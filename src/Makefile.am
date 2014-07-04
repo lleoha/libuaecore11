@@ -16,7 +16,7 @@ dist_noinst_DATA = WinUAE/table68k
 libuaecore11_la_SOURCES = WinUAE/newcpu.cpp WinUAE/readcpu.cpp core/core.cpp core/core_glue.cpp
 nodist_libuaecore11_la_SOURCES = cpuemu_11.cpp cpuemu_13_stub.cpp cpustbl.cpp cpudefs.cpp
 libuaecore11_la_CXXFLAGS = -fvisibility=hidden $(AM_CXXFLAGS)
-libuaecore11_la_LDFLAGS = -no-undefined $(AM_LDFLAGS)
+libuaecore11_la_LDFLAGS = -no-undefined -version-info 0:1:0 $(AM_LDFLAGS)
 
 cpuemu_11.cpp: tools/cpuemu_11.cpp
 	cp $< $@
