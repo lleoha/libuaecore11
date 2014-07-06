@@ -19,17 +19,16 @@ libuaecore11_la_CXXFLAGS = -fvisibility=hidden $(AM_CXXFLAGS)
 libuaecore11_la_LDFLAGS = -no-undefined -version-info 0:1:0 $(AM_LDFLAGS)
 
 cpuemu_11.cpp: tools/cpuemu_11.cpp
-	cp $< $@
+	@cp $< $@
 
 cpuemu_13_stub.cpp: tools/cpuemu_13_stub.cpp
-	cp $< $@
+	@cp $< $@
 
 cpustbl.cpp: tools/cpustbl.cpp
-	cp $< $@
+	@cp $< $@
 
 cpudefs.cpp: tools/cpudefs.cpp
-	cp $< $@
-	
+	@cp $< $@
 
 tools/cpuemu_11.cpp tools/cpuemu_13_stub.cpp tools/cpustbl.cpp tools/cputbl.h tools/cpudefs.cpp: tools/Makefile
 	$(MAKE) -C $(dir $@) $(notdir $@)

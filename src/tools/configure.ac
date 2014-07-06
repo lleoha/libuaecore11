@@ -3,8 +3,9 @@
 
 AC_PREREQ([2.69])
 
-AC_INIT([libuaecore11-tools], [0.1.0], [])
-AM_INIT_AUTOMAKE([foreign subdir-objects])
+AC_INIT([libuaecore11-tools], [0.1])
+AM_INIT_AUTOMAKE([1.11 foreign subdir-objects silent-rules])
+AM_SILENT_RULES([yes])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_LINKS([readcpu.cpp:../WinUAE/readcpu.cpp

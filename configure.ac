@@ -4,7 +4,8 @@
 AC_PREREQ([2.69])
 
 AC_INIT([libuaecore11], [0.1])
-AM_INIT_AUTOMAKE([foreign subdir-objects])
+AM_INIT_AUTOMAKE([1.11 foreign subdir-objects silent-rules])
+AM_SILENT_RULES([yes])
 LT_INIT
 
 AC_CONFIG_MACRO_DIR([m4])
